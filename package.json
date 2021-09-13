@@ -1,0 +1,29 @@
+{
+	"name": "@thoughtsunificator/bbcode-parser-template-example",
+	"type": "module",
+	"main": "index.js",
+	"description": "Example of a template for bbcode-parser",
+	"scripts": {
+		"test": "nodeunit-esm",
+		"generate-docs": "jsdoc --configure .jsdoc.json --verbose",
+		"lint": "eslint src/**/*.js"
+	},
+	"devDependencies": {
+		"eslint": "^7.0.0",
+		"jsdoc": "^3.6.7",
+		"jsdom": "^16.4.0",
+		"nodeunit-esm": "^1.0.2"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/thoughtsunificator/bbcode-parser-template-example.git"
+	},
+	"bugs": {
+		"url": "https://github.com/thoughtsunificator/bbcode-parser-template-example/issues"
+	},
+	"author": "Romain Lebesle <oss@thoughtsunificator.me> (https://thoughtsunificator.me)",
+	"license": "MIT",
+	"dependencies": {
+		"@thoughtsunificator/bbcode-parser-template": "^1.0.3"
+	}
+}
