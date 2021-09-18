@@ -1,3 +1,4 @@
+import assert from "assert"
 import { JSDOM } from "jsdom"
 import { Template } from "@thoughtsunificator/bbcode-parser-template"
 import * as Codes from "../index.js"
@@ -7,18 +8,18 @@ const { document } = virtualDOM.window
 
 const template = new Template(Object.values(Codes), document)
 
-export function toHTML(test) {
-	test.expect(1)
+describe("code", () => {
 
-	test.strictEqual(template.toHTML("[code][b][/b][s][/s][code]tesdsadt[/code][/code]"), `<div class="codetext"><pre>[b][/b][s][/s][code]tesdsadt[/code]</pre></div>`)
+	it("toHTML", () => {
 
-	test.done()
-}
+		assert.strictEqual(template.toHTML("[code][b][/b][s][/s][code]tesdsadt[/code][/code]"), `<div class="codetext"><pre>[b][/b][s][/s][code]tesdsadt[/code]</pre></div>`)
 
-export function toBBCode(test) {
-	test.expect(1)
+	})
 
-	test.strictEqual(template.toBBCode(`<div class="codetext"><pre>[b][/b][s][/s][code]tesdsadt[/code]</pre></div>`), "[code][b][/b][s][/s][code]tesdsadt[/code][/code]")
+	it("toBBCode", () => {
 
-	test.done()
-}
+		assert.strictEqual(template.toBBCode(`<div class="codetext"><pre>[b][/b][s][/s][code]tesdsadt[/code]</pre></div>`), "[code][b][/b][s][/s][code]tesdsadt[/code][/code]")
+
+	})
+
+})

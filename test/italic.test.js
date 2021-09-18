@@ -1,3 +1,4 @@
+import assert from "assert"
 import { JSDOM } from "jsdom"
 import { Template } from "@thoughtsunificator/bbcode-parser-template"
 import * as Codes from "../index.js"
@@ -7,26 +8,26 @@ const { document } = virtualDOM.window
 
 const template = new Template(Object.values(Codes), document)
 
-export function toHTML(test) {
-	test.expect(5)
+describe("italic", () => {
 
-	test.strictEqual(template.toHTML("[i]Test[/i]"), `<span style="font-style: italic;">Test</span>`)
-	test.strictEqual(template.toHTML("[i][i][/i][/i]"), `<span style="font-style: italic;"><span style="font-style: italic;"></span></span>`)
-	test.strictEqual(template.toHTML("[i][i]Test[/i][/i]"), `<span style="font-style: italic;"><span style="font-style: italic;">Test</span></span>`)
-	test.strictEqual(template.toHTML("[i][i]Test[/i]Test[/i]"), `<span style="font-style: italic;"><span style="font-style: italic;">Test</span>Test</span>`)
-	test.strictEqual(template.toHTML("[i][i][/i][/i][i][/i]"), `<span style="font-style: italic;"><span style="font-style: italic;"></span></span><span style="font-style: italic;"></span>`)
+	it("toHTML", () => {
 
-	test.done()
-}
+		assert.strictEqual(template.toHTML("[i]Test[/i]"), `<span style="font-style: italic;">Test</span>`)
+		assert.strictEqual(template.toHTML("[i][i][/i][/i]"), `<span style="font-style: italic;"><span style="font-style: italic;"></span></span>`)
+		assert.strictEqual(template.toHTML("[i][i]Test[/i][/i]"), `<span style="font-style: italic;"><span style="font-style: italic;">Test</span></span>`)
+		assert.strictEqual(template.toHTML("[i][i]Test[/i]Test[/i]"), `<span style="font-style: italic;"><span style="font-style: italic;">Test</span>Test</span>`)
+		assert.strictEqual(template.toHTML("[i][i][/i][/i][i][/i]"), `<span style="font-style: italic;"><span style="font-style: italic;"></span></span><span style="font-style: italic;"></span>`)
 
-export function toBBCode(test) {
-	test.expect(5)
+	})
 
-	test.strictEqual(template.toBBCode(`<span style="font-style: italic">Test</span>`), "[i]Test[/i]")
-	test.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic"></span></span>`), "[i][i][/i][/i]")
-	test.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic">Test</span></span>`), "[i][i]Test[/i][/i]")
-	test.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic">Test</span>Test</span>`), "[i][i]Test[/i]Test[/i]")
-	test.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic"></span></span><span style="font-style: italic"></span>`), "[i][i][/i][/i][i][/i]")
+	it("toBBCode", () => {
 
-	test.done()
-}
+		assert.strictEqual(template.toBBCode(`<span style="font-style: italic">Test</span>`), "[i]Test[/i]")
+		assert.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic"></span></span>`), "[i][i][/i][/i]")
+		assert.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic">Test</span></span>`), "[i][i]Test[/i][/i]")
+		assert.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic">Test</span>Test</span>`), "[i][i]Test[/i]Test[/i]")
+		assert.strictEqual(template.toBBCode(`<span style="font-style: italic"><span style="font-style: italic"></span></span><span style="font-style: italic"></span>`), "[i][i][/i][/i][i][/i]")
+
+	})
+
+})
