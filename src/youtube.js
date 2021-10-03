@@ -1,6 +1,9 @@
 import { Code } from "@thoughtsunificator/bbcode-parser-template"
 
-export default class extends Code {
+/**
+ * @global
+ */
+class YoutubeCode extends Code {
 
 	/**
 		* @readonly
@@ -47,3 +50,5 @@ export default class extends Code {
 	}
 
 }
+
+export default YoutubeCode

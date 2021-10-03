@@ -1,6 +1,9 @@
 import { Code } from "@thoughtsunificator/bbcode-parser-template"
 
-export default class extends Code {
+/**
+ * @global
+ */
+class CenterCode extends Code {
 
 	/**
 		* @readonly
@@ -36,3 +39,5 @@ export default class extends Code {
 	}
 
 }
+
+export default CenterCode
