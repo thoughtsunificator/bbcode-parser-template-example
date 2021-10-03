@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>quote.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/thoughtsunificator/bbcode-parser" target="_blank" >Github</a></h2><h3>Global</h3><ul><li><a href="global.html#testNode">testNode</a></li><li><a href="global.html#createBBNode">createBBNode</a></li><li><a href="global.html#createNode">createNode</a></li><li><a href="global.html#beforeCreateBBNode">beforeCreateBBNode</a></li><li><a href="global.html#appendNode">appendNode</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">quote.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Code } from "@thoughtsunificator/bbcode-parser-template"
+
+export default class extends Code {
+
+	/**
+		* @readonly
+		* @type {string}
+		*/
+	static tagName = "quote"
+
+	/**
+		* @param {Node} node
+		* @returns {boolean}
+		*/
+	static testNode(node) {
+		return node.nodeName === "DIV" &amp;&amp; node.className === "quotetext"
+	}
+
+	/**
+		* @param {Conversion} conversion
+		*/
+	static beforeCreateBBNode(conversion) {
+		if (conversion.node.parentNode.className === "spoiler_content") {
+			conversion.node.parentNode.parentNode.parentNode.appendChild(conversion.node)
+		}
+		if (conversion.node.children.length >= 1 &amp;&amp; conversion.node.children[0].nodeName === "STRONG") {
+			conversion.ignoreNodeList.push(conversion.node.children[0])
+			conversion.ignoreNodeList.push(conversion.node.children[0].firstChild)
+			conversion.ignoreNodeList.push(conversion.node.children[1])
+			conversion.ignoreNodeList.push(conversion.node.querySelector(".hide_button"))
+			conversion.ignoreNodeList.push(conversion.node.querySelector(".hide_button input"))
+			conversion.ignoreNodeList.push(conversion.node.querySelector(".hide_button .spoiler_content"))
+		}
+	}
+
+	/**
+		* @param {Conversion} conversion
+		* @returns {BBNode}
+		*/
+	static createBBNode(conversion) {
+		let value = null
+		if (conversion.node.children.length >= 1 &amp;&amp; conversion.node.children[0].nodeName === "STRONG") {
+			value = conversion.node.children[0].textContent.substring(0, conversion.node.children[0].textContent.length - " said:".length)
+		}
+		const bbNode = conversion.bbDocument.createElement("quote", value)
+		return bbNode
+	}
+
+	/**
+		* @param {Conversion} conversion
+		* @returns {Node}
+		*/
+	static createNode(conversion) {
+		const node = conversion.document.createElement("div")
+		node.className = "quotetext"
+		if (conversion.bbNode.keys.get("quote") !== null) {
+			const strong = conversion.document.createElement("strong")
+			strong.textContent = conversion.bbNode.keys.get("quote") + " said:"
+			node.appendChild(strong)
+			const br = conversion.document.createElement("br")
+			node.appendChild(br)
+		}
+		let treeWalker = conversion.bbNode.ownerDocument.createTreeWalker(conversion.bbNode)
+		const parentBBNodes = []
+		while(treeWalker.parentNode()) {
+			parentBBNodes.push(treeWalker.currentNode)
+		}
+		const parentQuoteBBNodes = parentBBNodes.filter(bbNode_ => bbNode_.tagName === "quote")
+		treeWalker = conversion.bbNode.ownerDocument.createTreeWalker(conversion.bbNode)
+		const childrenBBNodes = []
+		while(treeWalker.nextNode()) {
+			childrenBBNodes.push(treeWalker.currentNode)
+		}
+		const childrenQuoteBBNodes = childrenBBNodes.filter(bbNode_ => bbNode_.tagName === "quote")
+		if (parentQuoteBBNodes.length === 1 &amp;&amp; childrenQuoteBBNodes.length >= 1) {
+			const node2 = conversion.document.createElement("div")
+			node2.className = "hide_button"
+			const input = conversion.document.createElement("input")
+			input.type = "button"
+			input.className = "button expand_quote"
+			input.setAttribute("onclick", "this.nextSibling.style.display = \"block\";this.remove();")
+			input.value = "Expand Quote"
+			node2.appendChild(input)
+			const span = conversion.document.createElement("span")
+			span.className = "spoiler_content"
+			span.style.display = "none"
+			node.appendChild(node2)
+			node2.appendChild(span)
+		}
+		return node
+	}
+
+	/**
+		* @param {Conversion} conversion
+		*/
+	static appendNode(conversion) {
+		if (conversion.parentMatch.node.className === "quotetext") {
+			const treeWalker = conversion.bbDocument.createTreeWalker(conversion.bbNode)
+			const parentBBNodes = []
+			while(treeWalker.parentNode()) {
+				parentBBNodes.push(treeWalker.currentNode)
+			}
+			const parentQuoteBBNodes = parentBBNodes.filter(bbNode_ => bbNode_.tagName === "quote")
+			if (conversion.node.className === "quotetext" &amp;&amp; parentQuoteBBNodes.length === 2) {
+				conversion.matches.find(matchedNode => matchedNode.bbNode === parentQuoteBBNodes[1]).node.querySelector(".spoiler_content").appendChild(conversion.node)
+			} else {
+				const hideButton = [...conversion.parentMatch.node.children].find(child => child.className === "hide_button")
+				if(hideButton) {
+					hideButton.before(conversion.node)
+				} else {
+					conversion.parentMatch.node.appendChild(conversion.node)
+				}
+			}
+		}
+	}
+
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.7</a> on Sun Oct 03 2021 13:43:20 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
