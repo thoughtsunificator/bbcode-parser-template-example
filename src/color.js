@@ -1,7 +1,9 @@
 import { Code } from "@thoughtsunificator/bbcode-parser-template"
 
-
-export default class extends Code {
+/**
+ * @global
+ */
+class ColorCode extends Code {
 	/**
 		* @readonly
 		* @type {string}
@@ -46,3 +48,5 @@ export default class extends Code {
 	}
 
 }
+
+export default ColorCode
